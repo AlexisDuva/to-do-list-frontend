@@ -3,7 +3,7 @@ import type { Task } from '../../types/task'
 import TaskItem from './TaskItem.vue'
 
 defineProps<{ tasks: Task[] }>()
-defineEmits<{ edit: [task: Task]; delete: [task: Task] }>()
+defineEmits<{ edit: [task: Task]; delete: [task: Task]; 'toggle-complete': [task: Task] }>()
 </script>
 
 <template>
@@ -15,6 +15,7 @@ defineEmits<{ edit: [task: Task]; delete: [task: Task] }>()
       :task="task"
       @edit="$emit('edit', task)"
       @delete="$emit('delete', task)"
+      @toggle-complete="$emit('toggle-complete', task)"
     />
   </ul>
 </template>

@@ -56,6 +56,14 @@ Reference docs: [tech-stack.md](./tech-stack.md), backend [api-documentation.md]
    6. Verify: through the real UI. Automated via a throwaway Playwright script (`npx -p playwright node <script>.js`, browser installed once via `npx playwright install chromium`) — kept entirely outside the project (not added to `package.json`, not committed), the same way earlier steps used throwaway curl/node sanity checks. The script drives headless Chromium against the local dev server to: create a task via the form, assert a blank title shows a validation error and doesn't submit, edit the task and confirm the change persists after a reload (proves it hits `PUT`, not just local state), delete it via the confirm dialog, and confirm it's gone after a reload too.
    7. Commit: `"Step 6: task CRUD"`.
 
+7. **Completion toggle and overdue styling**
+   1. Extend `src/stores/tasks.ts` with `toggleComplete(task)`, calling the dedicated `PATCH /complete`/`/incomplete` endpoints (`completeTask`/`incompleteTask` in `src/api/tasks.ts`) rather than a full `PUT` — matching the API's own design. Patches the single task in place from the response instead of a full `loadTasks()` reload.
+   2. `TaskItem.vue`: add a checkbox bound to `task.completed`, emitting a `toggle-complete` event (same pattern as `edit`/`delete`) rather than calling the store directly, keeping the component presentation-only.
+   3. Visual styling in `TaskItem.vue`: completed tasks get a strikethrough/muted title; overdue tasks (`task.overdue`, server-computed, never recomputed client-side) get their due date highlighted (e.g. red/bold). A completed task is never `overdue` per the API's own definition, so no conflicting state to handle.
+   4. Wire the event through `TaskList.vue` into `TaskListView.vue`, calling `tasksStore.toggleComplete(task)`.
+   5. Verify: via the same throwaway Playwright approach as step 6 — create a task, toggle complete, confirm strikethrough styling and that it persists after reload (proves it hits the `PATCH` endpoint); toggle back to incomplete and confirm styling reverts; create a task with a past due date, confirm overdue styling appears, and confirm it disappears once marked complete. Clean up test tasks afterward.
+   6. Commit: `"Step 7: completion toggle and overdue styling"`.
+
 ## Working agreement
 
 - Implement **one step at a time**.

@@ -62,6 +62,7 @@ async function handleDeleteConfirm() {
     :tasks="tasksStore.tasks"
     @edit="openEditForm"
     @delete="(task) => (deletingTask = task)"
+    @toggle-complete="tasksStore.toggleComplete"
   />
 
   <TaskForm

@@ -1,6 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchTasks, createTask, updateTask, deleteTask } from '../api/tasks'
+import {
+  fetchTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  completeTask,
+  incompleteTask,
+} from '../api/tasks'
 import type { Task, TaskPayload } from '../types/task'
 import { ApiError } from '../types/api'
 
@@ -36,5 +43,11 @@ export const useTasksStore = defineStore('tasks', () => {
     await loadTasks()
   }
 
-  return { tasks, isLoading, error, loadTasks, addTask, editTask, removeTask }
+  async function toggleComplete(task: Task) {
+    const updated = task.completed ? await incompleteTask(task.id) : await completeTask(task.id)
+    const index = tasks.value.findIndex((t) => t.id === task.id)
+    if (index !== -1) tasks.value[index] = updated
+  }
+
+  return { tasks, isLoading, error, loadTasks, addTask, editTask, removeTask, toggleComplete }
 })
