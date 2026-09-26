@@ -14,6 +14,14 @@ Reference docs: [tech-stack.md](./tech-stack.md), backend [api-documentation.md]
    5. Review the generated structure: check `package.json` dependency versions, confirm `tsconfig.json` is sane, note starter boilerplate (e.g. the default `HelloWorld.vue`) to be replaced in later steps rather than built on top of.
    6. Commit: `"Step 1: project scaffolding"`.
 
+2. **Tailwind CSS setup**
+   1. Install Tailwind v4 and its official Vite plugin: `npm install tailwindcss @tailwindcss/vite` — v4 integrates via a Vite plugin rather than the old PostCSS config file (`tailwind.config.js`/`postcss.config.js`), so no separate config files are needed for a default setup.
+   2. Register the plugin in `vite.config.ts` (`import tailwindcss from '@tailwindcss/vite'`, add to the `plugins` array).
+   3. In `src/style.css`, replace the generated starter CSS with a single `@import "tailwindcss";` — this is what pulls in Tailwind's base styles and utility classes at build time.
+   4. Verify: temporarily add a distinctive utility class (e.g. `text-blue-600 font-bold`) to an element in `src/App.vue`, run `npm run build`, and confirm the generated CSS output actually contains the corresponding rule (proves Tailwind is really scanning/generating from the source, not just that the import didn't error). Also run `npm run dev` and confirm no console/terminal errors.
+   5. Remove the temporary test class from `App.vue` once confirmed (keep `src/App.vue` as the untouched starter for now — real markup starts in step 4/5).
+   6. Commit: `"Step 2: Tailwind CSS setup"`.
+
 ## Working agreement
 
 - Implement **one step at a time**.
