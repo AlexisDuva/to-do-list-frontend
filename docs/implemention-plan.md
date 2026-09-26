@@ -39,6 +39,14 @@ Reference docs: [tech-stack.md](./tech-stack.md), backend [api-documentation.md]
    5. Verify: `npm run build` to type-check, then run the dev server and actually click through each nav link in a browser — confirm the URL changes, the correct placeholder view renders, and refreshing the page on `/projects` or `/tags` doesn't 404 (the standard SPA history-mode gotcha).
    6. Commit: `"Step 4: routing skeleton"`.
 
+5. **Read-only task list**
+   1. `src/stores/tasks.ts` (Pinia, setup style) — read-only for now: `tasks`, `isLoading`, `error` refs, `loadTasks()` calling `fetchTasks()` and catching `ApiError`. No filters, create/edit/delete/complete actions yet — those come in steps 6–8.
+   2. `src/components/tasks/TaskItem.vue` — displays one task's title, description, due date, and priority; project/tag ids shown raw for now (resolving to names comes once projects/tags stores exist in step 9). Pure display, no buttons yet.
+   3. `src/components/tasks/TaskList.vue` — iterates `tasksStore.tasks`, renders a `TaskItem` per task, shows an empty-state message when the list is empty.
+   4. `TaskListView.vue`: replace the step-4 placeholder heading with real content — call `tasksStore.loadTasks()` in `onMounted`, show a loading indicator while `isLoading`, an error message if `error` is set, otherwise `<TaskList>`.
+   5. Verify: this is the first step touching real data end-to-end through the browser, and the first real test of the CORS fix just applied on the backend. Seed a couple of tasks directly via a throwaway script/curl against the backend (no create UI exists yet), load the frontend in a browser, confirm the tasks render with correct fields, and check the browser console/Network tab for a successful `GET /api/tasks` with no CORS errors. Clean up the seeded tasks afterward via curl.
+   6. Commit: `"Step 5: read-only task list"`.
+
 ## Working agreement
 
 - Implement **one step at a time**.
