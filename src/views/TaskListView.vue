@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useTasksStore } from '../stores/tasks'
 import TaskList from '../components/tasks/TaskList.vue'
 import TaskForm from '../components/tasks/TaskForm.vue'
+import FilterBar from '../components/tasks/FilterBar.vue'
 import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import type { Task, TaskPayload } from '../types/task'
 
@@ -53,6 +54,8 @@ async function handleDeleteConfirm() {
       Add task
     </button>
   </div>
+
+  <FilterBar class="mt-4" @change="tasksStore.setFilters" />
 
   <p v-if="tasksStore.isLoading" class="mt-4 text-gray-500">Loading...</p>
   <p v-else-if="tasksStore.error" class="mt-4 text-red-600">{{ tasksStore.error }}</p>

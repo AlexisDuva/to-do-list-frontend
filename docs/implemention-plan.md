@@ -64,6 +64,13 @@ Reference docs: [tech-stack.md](./tech-stack.md), backend [api-documentation.md]
    5. Verify: via the same throwaway Playwright approach as step 6 — create a task, toggle complete, confirm strikethrough styling and that it persists after reload (proves it hits the `PATCH` endpoint); toggle back to incomplete and confirm styling reverts; create a task with a past due date, confirm overdue styling appears, and confirm it disappears once marked complete. Clean up test tasks afterward.
    6. Commit: `"Step 7: completion toggle and overdue styling"`.
 
+8. **Filters, sorting, and search**
+   1. Extend `src/stores/tasks.ts` with a `filters` ref (default `{ sortBy: 'dueDate', sortDir: 'asc' }`) and `setFilters(partial)`, which merges into `filters` and re-fetches via `loadTasks()`. `loadTasks()` now passes `filters.value` to `fetchTasks()` instead of no args — server-side filtering/sorting, using the query params the API already supports, rather than duplicating filter logic client-side.
+   2. `src/components/tasks/FilterBar.vue`: status select (All/Incomplete/Completed), priority select (All/Low/Medium/High), a debounced (~300ms) search text input, and sort controls (`sortBy`: due date/priority/created; `sortDir`: ascending/descending). Project/tag filters are deliberately left out for now, same reasoning as step 6's form — they need real project/tag data to populate from, which comes in step 9.
+   3. Wire `FilterBar` into `TaskListView.vue`, above the task list, calling `tasksStore.setFilters(...)` on each change.
+   4. Verify: via Playwright — seed tasks with varying priority/completed/dueDate, confirm each filter (status, priority) and a search term produce the expected list and the correct query param on the request; confirm sortBy/sortDir actually change the rendered order; confirm rapid typing in search fires only one request after the debounce, not one per keystroke. Clean up seeded tasks afterward.
+   5. Commit: `"Step 8: filters, sorting, and search"`.
+
 ## Working agreement
 
 - Implement **one step at a time**.
