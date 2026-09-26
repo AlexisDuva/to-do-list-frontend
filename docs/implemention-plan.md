@@ -31,6 +31,14 @@ Reference docs: [tech-stack.md](./tech-stack.md), backend [api-documentation.md]
    6. If the local backend is running, an additional live sanity check: a throwaway, uncommitted script calling `fetchTasks()` against the real backend, to confirm the axios wiring/base URL/error unwrapping actually work end-to-end — mirrors the backend plan's temporary `CommandLineRunner` checks. Skipped if the backend isn't up at this point; type-checking is the only *required* verification for this step.
    7. Commit: `"Step 3: types and API layer"`.
 
+4. **Routing skeleton**
+   1. Placeholder views (`src/views/`): `TaskListView.vue`, `ProjectsView.vue`, `TagsView.vue` — each just a heading for now (e.g. "Tasks"), so navigation can be proven before any real feature code exists. Placeholders are used instead of the real views since those depend on stores/components not built until later steps (step 5+); building them now would mean either stubbing out half their dependencies or pulling later steps forward, collapsing the step-by-step plan.
+   2. `src/router/index.ts`: three routes (`/` → `TaskListView`, `/projects` → `ProjectsView`, `/tags` → `TagsView`), using `createWebHistory(import.meta.env.BASE_URL)`.
+   3. Wire Pinia and the router into the app in `src/main.ts` (`app.use(createPinia())`, `app.use(router)`) — Pinia was installed as a dependency in step 1 but never actually registered with the app until now.
+   4. `App.vue`: replace the Vite starter content (`<HelloWorld />`) with a simple nav bar (`<RouterLink>` to `/`, `/projects`, `/tags`) and a `<RouterView />`. Remove the now-unused starter boilerplate (`src/components/HelloWorld.vue`, `src/assets/hero.png`, `vite.svg`, `vue.svg`) since nothing will reference them anymore.
+   5. Verify: `npm run build` to type-check, then run the dev server and actually click through each nav link in a browser — confirm the URL changes, the correct placeholder view renders, and refreshing the page on `/projects` or `/tags` doesn't 404 (the standard SPA history-mode gotcha).
+   6. Commit: `"Step 4: routing skeleton"`.
+
 ## Working agreement
 
 - Implement **one step at a time**.
