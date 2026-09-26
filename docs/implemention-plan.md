@@ -47,6 +47,15 @@ Reference docs: [tech-stack.md](./tech-stack.md), backend [api-documentation.md]
    5. Verify: this is the first step touching real data end-to-end through the browser, and the first real test of the CORS fix just applied on the backend. Seed a couple of tasks directly via a throwaway script/curl against the backend (no create UI exists yet), load the frontend in a browser, confirm the tasks render with correct fields, and check the browser console/Network tab for a successful `GET /api/tasks` with no CORS errors. Clean up the seeded tasks afterward via curl.
    6. Commit: `"Step 5: read-only task list"`.
 
+6. **Task CRUD**
+   1. `src/components/common/Modal.vue` — generic reusable modal wrapper (overlay + centered box + close-on-backdrop-click), used by `TaskForm` and later `ConfirmDialog`.
+   2. `src/components/common/ConfirmDialog.vue` — generic yes/no confirmation dialog for destructive actions, reused later for project/tag delete (step 9).
+   3. `src/components/tasks/TaskForm.vue` — inside `Modal`, for both create and edit. Fields: title (required), description, due date, priority. Project/tag fields are deliberately left out for now (deferred to step 9, once real project/tag stores exist to select from — a numeric-id input would just be thrown-away UI). Takes an optional `task` prop: `null` = create mode, a `Task` = edit mode (pre-fills fields). Client-side validation mirrors the backend's rule (title required/non-blank) before submitting.
+   4. Extend `src/stores/tasks.ts` with real mutations: `addTask(payload)`, `editTask(id, payload)`, `removeTask(id)`, each calling the corresponding `src/api/tasks.ts` function then reloading `tasks`.
+   5. Wire into the UI: an "Add task" button in `TaskListView.vue` opens `TaskForm` in create mode; each `TaskItem` gets "Edit" (opens `TaskForm` pre-filled) and "Delete" (opens `ConfirmDialog`, then calls `removeTask`) buttons.
+   6. Verify: through the real UI. Automated via a throwaway Playwright script (`npx -p playwright node <script>.js`, browser installed once via `npx playwright install chromium`) — kept entirely outside the project (not added to `package.json`, not committed), the same way earlier steps used throwaway curl/node sanity checks. The script drives headless Chromium against the local dev server to: create a task via the form, assert a blank title shows a validation error and doesn't submit, edit the task and confirm the change persists after a reload (proves it hits `PUT`, not just local state), delete it via the confirm dialog, and confirm it's gone after a reload too.
+   7. Commit: `"Step 6: task CRUD"`.
+
 ## Working agreement
 
 - Implement **one step at a time**.

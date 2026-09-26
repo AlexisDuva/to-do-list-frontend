@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchTasks } from '../api/tasks'
-import type { Task } from '../types/task'
+import { fetchTasks, createTask, updateTask, deleteTask } from '../api/tasks'
+import type { Task, TaskPayload } from '../types/task'
 import { ApiError } from '../types/api'
 
 export const useTasksStore = defineStore('tasks', () => {
@@ -21,5 +21,20 @@ export const useTasksStore = defineStore('tasks', () => {
     }
   }
 
-  return { tasks, isLoading, error, loadTasks }
+  async function addTask(payload: TaskPayload) {
+    await createTask(payload)
+    await loadTasks()
+  }
+
+  async function editTask(id: number, payload: TaskPayload) {
+    await updateTask(id, payload)
+    await loadTasks()
+  }
+
+  async function removeTask(id: number) {
+    await deleteTask(id)
+    await loadTasks()
+  }
+
+  return { tasks, isLoading, error, loadTasks, addTask, editTask, removeTask }
 })
