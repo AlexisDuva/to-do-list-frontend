@@ -71,6 +71,14 @@ Reference docs: [tech-stack.md](./tech-stack.md), backend [api-documentation.md]
    4. Verify: via Playwright — seed tasks with varying priority/completed/dueDate, confirm each filter (status, priority) and a search term produce the expected list and the correct query param on the request; confirm sortBy/sortDir actually change the rendered order; confirm rapid typing in search fires only one request after the debounce, not one per keystroke. Clean up seeded tasks afterward.
    5. Commit: `"Step 8: filters, sorting, and search"`.
 
+9. **Projects and tags CRUD**
+   1. `src/stores/projects.ts` / `src/stores/tags.ts` (Pinia, setup style): `items`, `isLoading`, `error`, `loadAll()`, `create(payload)`, `rename(id, payload)`, `remove(id)`. `remove` also reloads the tasks store afterward, since deleting a project/tag changes tasks server-side (unassigns project, drops the tag from `tagIds`) and any currently-rendered task list would otherwise show stale data.
+   2. `src/components/projects/ProjectManager.vue` — list with inline rename (click-to-edit) and delete (via the existing `ConfirmDialog`), plus an "add new" input. `src/components/tags/TagManager.vue` mirrors this exactly for tags.
+   3. Wire into the existing placeholder views: `ProjectsView.vue`/`TagsView.vue` call `loadAll()` in `onMounted` and render the corresponding manager component.
+   4. Fill in the project/tag pieces deferred from steps 6 and 8: `TaskForm.vue` gets a project select (options from `projectsStore.items`, plus a "None" option for `projectId: null`) and a tag multi-select/checkboxes (from `tagsStore.items`); `FilterBar.vue` gets project and tag filter selects from the same data; `TaskItem.vue` resolves `projectId`/`tagIds` to actual names instead of showing raw ids (needs `TaskListView.vue` to load the projects/tags stores alongside tasks in `onMounted`).
+   5. Verify: via Playwright — create a project and a tag, confirm they appear in both `TaskForm`'s dropdowns and `FilterBar`'s filters; assign a task to them and confirm `TaskItem` shows resolved names, not raw ids; delete the project and confirm the task's project shows as unassigned afterward rather than erroring (matches the API's documented cascade behavior); same check deleting a tag. Clean up test data afterward.
+   6. Commit: `"Step 9: projects and tags CRUD"`.
+
 ## Working agreement
 
 - Implement **one step at a time**.

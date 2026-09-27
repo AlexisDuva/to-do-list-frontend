@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useTasksStore } from '../stores/tasks'
+import { useProjectsStore } from '../stores/projects'
+import { useTagsStore } from '../stores/tags'
 import TaskList from '../components/tasks/TaskList.vue'
 import TaskForm from '../components/tasks/TaskForm.vue'
 import FilterBar from '../components/tasks/FilterBar.vue'
@@ -8,9 +10,13 @@ import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import type { Task, TaskPayload } from '../types/task'
 
 const tasksStore = useTasksStore()
+const projectsStore = useProjectsStore()
+const tagsStore = useTagsStore()
 
 onMounted(() => {
   tasksStore.loadTasks()
+  projectsStore.loadAll()
+  tagsStore.loadAll()
 })
 
 const editingTask = ref<Task | null>(null)

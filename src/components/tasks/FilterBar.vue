@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { TaskFilters, TaskStatus, Priority, SortBy, SortDir } from '../../types/task'
+import { useProjectsStore } from '../../stores/projects'
+import { useTagsStore } from '../../stores/tags'
 
 const emit = defineEmits<{ change: [partial: Partial<TaskFilters>] }>()
 
+const projectsStore = useProjectsStore()
+const tagsStore = useTagsStore()
+
 const status = ref<TaskStatus | ''>('')
 const priority = ref<Priority | ''>('')
+const projectId = ref<number | ''>('')
+const tagId = ref<number | ''>('')
 const search = ref('')
 const sortBy = ref<SortBy>('dueDate')
 const sortDir = ref<SortDir>('asc')
@@ -25,6 +32,14 @@ function onStatusChange() {
 
 function onPriorityChange() {
   emit('change', { priority: priority.value || undefined })
+}
+
+function onProjectChange() {
+  emit('change', { projectId: projectId.value || undefined })
+}
+
+function onTagChange() {
+  emit('change', { tagId: tagId.value || undefined })
 }
 
 function onSortChange() {
@@ -53,6 +68,20 @@ function onSortChange() {
       <option value="LOW">Low</option>
       <option value="MEDIUM">Medium</option>
       <option value="HIGH">High</option>
+    </select>
+
+    <select v-model="projectId" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onProjectChange">
+      <option value="">All projects</option>
+      <option v-for="project in projectsStore.items" :key="project.id" :value="project.id">
+        {{ project.name }}
+      </option>
+    </select>
+
+    <select v-model="tagId" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onTagChange">
+      <option value="">All tags</option>
+      <option v-for="tag in tagsStore.items" :key="tag.id" :value="tag.id">
+        {{ tag.name }}
+      </option>
     </select>
 
     <select v-model="sortBy" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onSortChange">

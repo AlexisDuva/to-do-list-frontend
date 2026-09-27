@@ -1,8 +1,23 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Task } from '../../types/task'
+import { useProjectsStore } from '../../stores/projects'
+import { useTagsStore } from '../../stores/tags'
 
-defineProps<{ task: Task }>()
+const props = defineProps<{ task: Task }>()
 defineEmits<{ edit: []; delete: []; 'toggle-complete': [] }>()
+
+const projectsStore = useProjectsStore()
+const tagsStore = useTagsStore()
+
+const projectName = computed(
+  () => projectsStore.items.find((p) => p.id === props.task.projectId)?.name,
+)
+const tagNames = computed(() =>
+  props.task.tagIds
+    .map((id) => tagsStore.items.find((t) => t.id === id)?.name)
+    .filter((name): name is string => Boolean(name)),
+)
 </script>
 
 <template>
@@ -31,8 +46,8 @@ defineEmits<{ edit: []; delete: []; 'toggle-complete': [] }>()
           <span :class="task.overdue ? 'font-bold text-red-600' : 'text-gray-500'" v-if="task.dueDate">
             Due {{ task.dueDate }}<span v-if="task.overdue"> (overdue)</span>
           </span>
-          <span class="text-gray-500" v-if="task.projectId !== null">Project #{{ task.projectId }}</span>
-          <span class="text-gray-500" v-if="task.tagIds.length">Tags: {{ task.tagIds.join(', ') }}</span>
+          <span class="text-gray-500" v-if="projectName">Project: {{ projectName }}</span>
+          <span class="text-gray-500" v-if="tagNames.length">Tags: {{ tagNames.join(', ') }}</span>
         </div>
         <div class="mt-3 flex gap-2 text-sm">
           <button class="text-blue-600 hover:underline" @click="$emit('edit')">Edit</button>
