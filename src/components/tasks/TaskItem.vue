@@ -21,7 +21,7 @@ const tagNames = computed(() =>
 </script>
 
 <template>
-  <li class="rounded border border-gray-200 p-4">
+  <li class="rounded border border-gray-200 bg-white p-4 shadow-sm">
     <div class="flex items-start gap-3">
       <input
         type="checkbox"

@@ -61,7 +61,7 @@ async function handleDeleteConfirm() {
           v-model="newName"
           type="text"
           placeholder="New tag name"
-          class="flex-1 rounded border border-gray-300 px-2 py-1"
+          class="flex-1 rounded border border-gray-300 bg-gray-50 px-2 py-1 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <button type="submit" class="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
           Add
@@ -75,10 +75,14 @@ async function handleDeleteConfirm() {
       <li
         v-for="tag in tagsStore.items"
         :key="tag.id"
-        class="flex items-center justify-between rounded border border-gray-200 p-3"
+        class="flex items-center justify-between rounded border border-gray-200 bg-white p-3 shadow-sm"
       >
         <template v-if="editingId === tag.id">
-          <input v-model="editingName" type="text" class="flex-1 rounded border border-gray-300 px-2 py-1" />
+          <input
+            v-model="editingName"
+            type="text"
+            class="flex-1 rounded border border-gray-300 bg-gray-50 px-2 py-1 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
           <div class="ml-2 flex gap-2 text-sm">
             <button class="text-blue-600 hover:underline" @click="saveEdit">Save</button>
             <button class="text-gray-500 hover:underline" @click="editingId = null">Cancel</button>

@@ -19,6 +19,9 @@ const projectId = ref<number | null>(props.task?.projectId ?? null)
 const tagIds = ref<number[]>(props.task?.tagIds ?? [])
 const titleError = ref<string | null>(null)
 
+const fieldClass =
+  'w-full rounded border border-gray-300 bg-gray-50 px-2 py-1 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500'
+
 function toggleTag(id: number) {
   const index = tagIds.value.indexOf(id)
   if (index === -1) {
@@ -53,23 +56,23 @@ function handleSubmit() {
     <form class="flex flex-col gap-3" @submit.prevent="handleSubmit">
       <div>
         <label class="mb-1 block text-sm font-medium">Title</label>
-        <input v-model="title" type="text" class="w-full rounded border border-gray-300 px-2 py-1" />
+        <input v-model="title" type="text" :class="fieldClass" />
         <p v-if="titleError" class="mt-1 text-sm text-red-600">{{ titleError }}</p>
       </div>
 
       <div>
         <label class="mb-1 block text-sm font-medium">Description</label>
-        <textarea v-model="description" class="w-full rounded border border-gray-300 px-2 py-1" rows="3" />
+        <textarea v-model="description" :class="fieldClass" rows="3" />
       </div>
 
       <div>
         <label class="mb-1 block text-sm font-medium">Due date</label>
-        <input v-model="dueDate" type="date" class="w-full rounded border border-gray-300 px-2 py-1" />
+        <input v-model="dueDate" type="date" :class="fieldClass" />
       </div>
 
       <div>
         <label class="mb-1 block text-sm font-medium">Priority</label>
-        <select v-model="priority" class="w-full rounded border border-gray-300 px-2 py-1">
+        <select v-model="priority" :class="fieldClass">
           <option value="LOW">Low</option>
           <option value="MEDIUM">Medium</option>
           <option value="HIGH">High</option>
@@ -78,7 +81,7 @@ function handleSubmit() {
 
       <div>
         <label class="mb-1 block text-sm font-medium">Project</label>
-        <select v-model="projectId" class="w-full rounded border border-gray-300 px-2 py-1">
+        <select v-model="projectId" :class="fieldClass">
           <option :value="null">None</option>
           <option v-for="project in projectsStore.items" :key="project.id" :value="project.id">
             {{ project.name }}
