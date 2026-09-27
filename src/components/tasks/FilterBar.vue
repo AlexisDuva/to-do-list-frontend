@@ -48,51 +48,61 @@ function onSortChange() {
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center gap-3">
-    <input
-      v-model="search"
-      type="text"
-      placeholder="Search tasks..."
-      class="rounded border border-gray-300 px-2 py-1 text-sm"
-      @input="onSearchInput"
-    />
+  <div class="flex flex-wrap items-end gap-4">
+    <div class="flex flex-col gap-1">
+      <span class="text-xs font-medium uppercase tracking-wide text-gray-400">Filter</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Search tasks..."
+          class="rounded border border-gray-300 px-2 py-1 text-sm"
+          @input="onSearchInput"
+        />
 
-    <select v-model="status" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onStatusChange">
-      <option value="">All statuses</option>
-      <option value="incomplete">Incomplete</option>
-      <option value="completed">Completed</option>
-    </select>
+        <select v-model="status" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onStatusChange">
+          <option value="">All statuses</option>
+          <option value="incomplete">Incomplete</option>
+          <option value="completed">Completed</option>
+        </select>
 
-    <select v-model="priority" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onPriorityChange">
-      <option value="">All priorities</option>
-      <option value="LOW">Low</option>
-      <option value="MEDIUM">Medium</option>
-      <option value="HIGH">High</option>
-    </select>
+        <select v-model="priority" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onPriorityChange">
+          <option value="">All priorities</option>
+          <option value="LOW">Low</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="HIGH">High</option>
+        </select>
 
-    <select v-model="projectId" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onProjectChange">
-      <option value="">All projects</option>
-      <option v-for="project in projectsStore.items" :key="project.id" :value="project.id">
-        {{ project.name }}
-      </option>
-    </select>
+        <select v-model="projectId" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onProjectChange">
+          <option value="">All projects</option>
+          <option v-for="project in projectsStore.items" :key="project.id" :value="project.id">
+            {{ project.name }}
+          </option>
+        </select>
 
-    <select v-model="tagId" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onTagChange">
-      <option value="">All tags</option>
-      <option v-for="tag in tagsStore.items" :key="tag.id" :value="tag.id">
-        {{ tag.name }}
-      </option>
-    </select>
+        <select v-model="tagId" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onTagChange">
+          <option value="">All tags</option>
+          <option v-for="tag in tagsStore.items" :key="tag.id" :value="tag.id">
+            {{ tag.name }}
+          </option>
+        </select>
+      </div>
+    </div>
 
-    <select v-model="sortBy" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onSortChange">
-      <option value="dueDate">Due date</option>
-      <option value="priority">Priority</option>
-      <option value="createdAt">Created</option>
-    </select>
+    <div class="flex flex-col gap-1 border-l border-gray-200 pl-4">
+      <span class="text-xs font-medium uppercase tracking-wide text-gray-400">Sort</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <select v-model="sortBy" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onSortChange">
+          <option value="dueDate">Due date</option>
+          <option value="priority">Priority</option>
+          <option value="createdAt">Created</option>
+        </select>
 
-    <select v-model="sortDir" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onSortChange">
-      <option value="asc">Ascending</option>
-      <option value="desc">Descending</option>
-    </select>
+        <select v-model="sortDir" class="rounded border border-gray-300 px-2 py-1 text-sm" @change="onSortChange">
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
+    </div>
   </div>
 </template>
