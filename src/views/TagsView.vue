@@ -12,5 +12,10 @@ onMounted(() => {
 
 <template>
   <h1 class="text-2xl font-bold">Tags</h1>
-  <TagManager class="mt-4" />
+
+  <p v-if="tagsStore.isLoading" class="mt-4 text-gray-500">Loading...</p>
+  <template v-else>
+    <p v-if="tagsStore.error" class="mt-4 text-red-600">{{ tagsStore.error }}</p>
+    <TagManager class="mt-4" />
+  </template>
 </template>

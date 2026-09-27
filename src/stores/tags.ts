@@ -22,20 +22,36 @@ export const useTagsStore = defineStore('tags', () => {
     }
   }
 
+  async function withMutationErrorHandling(action: () => Promise<void>, fallbackMessage: string) {
+    error.value = null
+    try {
+      await action()
+    } catch (e) {
+      error.value = e instanceof ApiError ? e.message : fallbackMessage
+      throw e
+    }
+  }
+
   async function create(payload: TagPayload) {
-    await createTag(payload)
-    await loadAll()
+    await withMutationErrorHandling(async () => {
+      await createTag(payload)
+      await loadAll()
+    }, 'Failed to create tag')
   }
 
   async function rename(id: number, payload: TagPayload) {
-    await updateTag(id, payload)
-    await loadAll()
+    await withMutationErrorHandling(async () => {
+      await updateTag(id, payload)
+      await loadAll()
+    }, 'Failed to rename tag')
   }
 
   async function remove(id: number) {
-    await deleteTag(id)
-    await loadAll()
-    await useTasksStore().loadTasks()
+    await withMutationErrorHandling(async () => {
+      await deleteTag(id)
+      await loadAll()
+      await useTasksStore().loadTasks()
+    }, 'Failed to delete tag')
   }
 
   return { items, isLoading, error, loadAll, create, rename, remove }

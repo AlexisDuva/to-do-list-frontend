@@ -34,28 +34,46 @@ export const useTasksStore = defineStore('tasks', () => {
     loadTasks()
   }
 
+  async function withMutationErrorHandling(action: () => Promise<void>, fallbackMessage: string) {
+    error.value = null
+    try {
+      await action()
+    } catch (e) {
+      error.value = e instanceof ApiError ? e.message : fallbackMessage
+      throw e
+    }
+  }
+
   async function addTask(payload: TaskPayload) {
-    await createTask(payload)
-    await loadTasks()
+    await withMutationErrorHandling(async () => {
+      await createTask(payload)
+      await loadTasks()
+    }, 'Failed to create task')
   }
 
   async function editTask(id: number, payload: TaskPayload) {
-    await updateTask(id, payload)
-    await loadTasks()
+    await withMutationErrorHandling(async () => {
+      await updateTask(id, payload)
+      await loadTasks()
+    }, 'Failed to update task')
   }
 
   async function removeTask(id: number) {
-    await deleteTask(id)
-    await loadTasks()
+    await withMutationErrorHandling(async () => {
+      await deleteTask(id)
+      await loadTasks()
+    }, 'Failed to delete task')
   }
 
   async function toggleComplete(task: Task) {
-    if (task.completed) {
-      await incompleteTask(task.id)
-    } else {
-      await completeTask(task.id)
-    }
-    await loadTasks()
+    await withMutationErrorHandling(async () => {
+      if (task.completed) {
+        await incompleteTask(task.id)
+      } else {
+        await completeTask(task.id)
+      }
+      await loadTasks()
+    }, 'Failed to update task')
   }
 
   return {

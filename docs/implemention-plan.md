@@ -79,6 +79,15 @@ Reference docs: [tech-stack.md](./tech-stack.md), backend [api-documentation.md]
    5. Verify: via Playwright — create a project and a tag, confirm they appear in both `TaskForm`'s dropdowns and `FilterBar`'s filters; assign a task to them and confirm `TaskItem` shows resolved names, not raw ids; delete the project and confirm the task's project shows as unassigned afterward rather than erroring (matches the API's documented cascade behavior); same check deleting a tag. Clean up test data afterward.
    6. Commit: `"Step 9: projects and tags CRUD"`.
 
+10. **Polish**
+    1. Loading/error state audit: `ProjectsView.vue`/`TagsView.vue` get the same loading/error display `TaskListView.vue` already has (currently they silently show an empty list if the backend errors, indistinguishable from "genuinely no projects/tags yet"). Surface errors from mutation calls too (`addTask`/`editTask`/`removeTask`, `create`/`rename`/`remove` for projects/tags) — currently a failed mutation just silently no-ops in the UI.
+    2. Empty states already exist for tasks/projects/tags — verified accurate, not new work.
+    3. Responsive pass: check the nav bar, `FilterBar` (currently six inputs/selects in one `flex flex-wrap` row), and task/project/tag lists at a narrow (phone-width) viewport; adjust Tailwind classes as needed (e.g. stacking `FilterBar` controls vertically below a breakpoint).
+    4. Small cleanup: fix the Vue dev-console warning about `class` not falling through on `ProjectManager.vue`/`TagManager.vue` (multi-root components) by wrapping each in a single root `<div>`.
+    5. Rewrite `README.md` with real setup instructions (currently stale, says "no application code yet"): prerequisites (Node version, running backend), `npm install`, `.env` setup referencing `.env.example`, `npm run dev`, `npm run build`.
+    6. Verify: Playwright to confirm no console errors and that loading/error states render correctly when the backend is stopped; screenshots at a few viewport widths (phone/tablet/desktop) for the responsive pass, since there's no interactive browser available this session — final visual confirmation left to the developer's own browser.
+    7. Commit: `"Step 10: polish"`.
+
 ## Working agreement
 
 - Implement **one step at a time**.

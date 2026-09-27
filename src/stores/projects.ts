@@ -22,20 +22,36 @@ export const useProjectsStore = defineStore('projects', () => {
     }
   }
 
+  async function withMutationErrorHandling(action: () => Promise<void>, fallbackMessage: string) {
+    error.value = null
+    try {
+      await action()
+    } catch (e) {
+      error.value = e instanceof ApiError ? e.message : fallbackMessage
+      throw e
+    }
+  }
+
   async function create(payload: ProjectPayload) {
-    await createProject(payload)
-    await loadAll()
+    await withMutationErrorHandling(async () => {
+      await createProject(payload)
+      await loadAll()
+    }, 'Failed to create project')
   }
 
   async function rename(id: number, payload: ProjectPayload) {
-    await updateProject(id, payload)
-    await loadAll()
+    await withMutationErrorHandling(async () => {
+      await updateProject(id, payload)
+      await loadAll()
+    }, 'Failed to rename project')
   }
 
   async function remove(id: number) {
-    await deleteProject(id)
-    await loadAll()
-    await useTasksStore().loadTasks()
+    await withMutationErrorHandling(async () => {
+      await deleteProject(id)
+      await loadAll()
+      await useTasksStore().loadTasks()
+    }, 'Failed to delete project')
   }
 
   return { items, isLoading, error, loadAll, create, rename, remove }

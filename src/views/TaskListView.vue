@@ -34,17 +34,25 @@ function openEditForm(task: Task) {
 }
 
 async function handleSubmit(payload: TaskPayload) {
-  if (editingTask.value) {
-    await tasksStore.editTask(editingTask.value.id, payload)
-  } else {
-    await tasksStore.addTask(payload)
+  try {
+    if (editingTask.value) {
+      await tasksStore.editTask(editingTask.value.id, payload)
+    } else {
+      await tasksStore.addTask(payload)
+    }
+    isFormOpen.value = false
+  } catch {
+    // keep the form open so the user can retry; tasksStore.error already shows the message
   }
-  isFormOpen.value = false
 }
 
 async function handleDeleteConfirm() {
   if (deletingTask.value) {
-    await tasksStore.removeTask(deletingTask.value.id)
+    try {
+      await tasksStore.removeTask(deletingTask.value.id)
+    } catch {
+      // tasksStore.error already shows the message
+    }
   }
   deletingTask.value = null
 }
@@ -64,15 +72,16 @@ async function handleDeleteConfirm() {
   <FilterBar class="mt-4" @change="tasksStore.setFilters" />
 
   <p v-if="tasksStore.isLoading" class="mt-4 text-gray-500">Loading...</p>
-  <p v-else-if="tasksStore.error" class="mt-4 text-red-600">{{ tasksStore.error }}</p>
-  <TaskList
-    v-else
-    class="mt-4"
-    :tasks="tasksStore.tasks"
-    @edit="openEditForm"
-    @delete="(task) => (deletingTask = task)"
-    @toggle-complete="tasksStore.toggleComplete"
-  />
+  <template v-else>
+    <p v-if="tasksStore.error" class="mt-4 text-red-600">{{ tasksStore.error }}</p>
+    <TaskList
+      class="mt-4"
+      :tasks="tasksStore.tasks"
+      @edit="openEditForm"
+      @delete="(task) => (deletingTask = task)"
+      @toggle-complete="tasksStore.toggleComplete"
+    />
+  </template>
 
   <TaskForm
     v-if="isFormOpen"
